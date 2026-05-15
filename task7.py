@@ -1,4 +1,4 @@
-# My KB (from task 4) but specfically for task 7
+# my KB (from task 4) but specfically for task 7
 FACTS = {
     ("driver", "lewis_hamilton", "ferrari"),
     ("driver", "charles_leclerc", "ferrari"),
@@ -13,6 +13,7 @@ FACTS = {
 }
 
 RULES = [
+    # two drivers are teammates if they drive for the same team and aren't the same person
     (("teammates", "?x", "?y"),
      [("driver", "?x", "?t"), ("driver", "?y", "?t")]),
 
@@ -22,11 +23,11 @@ RULES = [
 
 
 def is_var(term):
-    #checks if a term is a variable 
+    # checks if a term is a variable 
     return isinstance(term, str) and term.startswith("?")
 
 def unify(pattern, fact, bindings):
-    #matches a pattern against a fact 
+    # matches a pattern against a fact 
     if len(pattern) != len(fact):
         return None
     b = dict(bindings)
@@ -43,6 +44,8 @@ def substitute(pattern, bindings):
     #fills in bound values.
     return tuple(bindings.get(t, t) for t in pattern)
 
+
+# this is where the backward chaining happens
 def prove(goal, facts, rules, bindings):
     #The OR step
     goal = substitute(goal, bindings)
@@ -72,7 +75,6 @@ def prove_body(goals, facts, rules, bindings):
         yield from prove_body(rest, facts, rules, b)
 
 def query(goal_tuple, facts=FACTS, rules=RULES):
-    """Top-level query. Returns all solutions as binding dicts."""
     results = prove(goal_tuple, facts, rules, {})
     if goal_tuple[0] == "teammates":
         results = [b for b in results if b.get("?x") != b.get("?y")]
@@ -80,15 +82,20 @@ def query(goal_tuple, facts=FACTS, rules=RULES):
 
 
 # tests
-if __name__ == "__main__":
-    tests = [
-        ("driver", "lewis_hamilton", "ferrari"),     # true
-        ("driver", "lewis_hamilton", "red_bull"),    # false
-        ("teammates", "lewis_hamilton", "charles_leclerc"),  # true
-        ("teammates", "lewis_hamilton", "max_verstappen"),   # false
-        ("teammates", "max_verstappen", "max_verstappen"),   # false
-        ("drives_for", "george_russell", "mercedes"),        # true
-    ]
-    for t in tests:
-        r = query(t)
-        print(f"{t} -> {'TRUE' if r else 'FALSE'}")
+print("Is Hamilton a Ferrari driver?")
+print(bool(query(("driver", "lewis_hamilton", "ferrari"))))
+ 
+print("\nIs Hamilton a Red Bull driver?")
+print(bool(query(("driver", "lewis_hamilton", "red_bull"))))
+ 
+print("\nAre Hamilton and Leclerc teammates?")
+print(bool(query(("teammates", "lewis_hamilton", "charles_leclerc"))))
+ 
+print("\nAre Hamilton and Verstappen teammates?")
+print(bool(query(("teammates", "lewis_hamilton", "max_verstappen"))))
+ 
+print("\nCan Verstappen be his own teammate?")
+print(bool(query(("teammates", "max_verstappen", "max_verstappen"))))
+ 
+print("\nDoes Russell drive for Mercedes?")
+print(bool(query(("drives_for", "george_russell", "mercedes"))))
