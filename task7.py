@@ -40,7 +40,7 @@ def unify(pattern, fact, bindings):
     return b
 
 def substitute(pattern, bindings):
-    #Replace variables in a tuple with their bound values.
+    #fills in bound values.
     return tuple(bindings.get(t, t) for t in pattern)
 
 def prove(goal, facts, rules, bindings):
