@@ -20,21 +20,18 @@ def gpt4_semantic_parser(user_question):
     print(f"Translating question: '{user_question}'")
     
     prompt = f"""
-    You are a logic translator for a Formula 1 database.
+    You are a logic translator.
     Translate the question into a valid Prolog query using ONLY these predicates:
     - driver(Name, Team).
     - teammates(Driver1, Driver2).
 
     Rules:
-    - Names must be lowercase and use underscores (e.g., lewis_hamilton).
+    - Names must be lowercase and use underscores (such as lewis_hamilton).
     - End the query with a period.
     
     Examples:
     Input: Is Lewis Hamilton a teammate of Charles Leclerc?
     Output: teammates(lewis_hamilton, charles_leclerc).
-
-    Input: Who is Max Verstappen's teammate?
-    Output: teammates(max_verstappen, X).
 
     Input: {user_question}
     Output:"""
