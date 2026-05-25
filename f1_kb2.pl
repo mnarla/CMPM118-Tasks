@@ -34,32 +34,38 @@ gp_wins(kimi_antonelli, 0).
 % RULES 
 
 % 1. Teammates
+% Two drivers are teammates if they drive for the same F1 constructor team and are not the same person.
 teammates(X, Y) :-
     driver(X, Team),
     driver(Y, Team),
     X \= Y.
 
 % 2. Engine Customers
+% A team is considered an engine customer if they purchase and use an engine supplied by a different entity (i.e. the team name is different from the engine name).
 engine_customer(Team, Engine) :-
     constructor_engine(Team, Engine),
     Team \= Engine.
 
 % 3. Works Team
+% A works team is a manufacturer that builds both its own chassis and its own engine (i.e. the team name matches the engine name).
 works_team(Team) :-
     constructor_engine(Team, Team).
 
 % 4. Rival Drivers
+% Drivers are considered rivals if they drive for different teams (and therefore compete against each other).
 rival_drivers(X, Y) :-
     driver(X, TeamX),
     driver(Y, TeamY),
     TeamX \= TeamY.
 
 % 5. Veteran Driver
+% A driver is considered a veteran driver if they have won more than 10 Grand Prix races in their career.
 veteran_driver(X) :-
     gp_wins(X, Wins),
     Wins > 10.
 
 % 6. Race Winner
+% A driver is a race winner if they have finished first in at least 1 Grand Prix (wins >= 1).
 race_winner(X) :-
     gp_wins(X, Wins),
     Wins >= 1.
