@@ -106,7 +106,7 @@ if __name__ == "__main__":
     load_knowledge_base()
     # tests
     run_query("Is Ferrari a works team?")
-    run_query("Is McLaren a customer team?")
+    run_query("Is Ferrari a customer team?")
     run_query("Are Lewis Hamilton and Max Verstappen rivals?")
     run_query("Is George Russell a race winner?")
     run_query("Is Charles Leclerc a teammate of Lewis Hamilton?")
