@@ -77,4 +77,9 @@ if __name__ == "__main__":
     # Tests
     linc_pipeline("Is Lewis Hamilton a driver for Ferrari?")
     linc_pipeline("Is Charles Leclerc a teammate of Max Verstappen?")
+<<<<<<< HEAD
+    
     linc_pipeline("Does Kimi Antonelli drive for Mercedes and is he teammates with Lewis Hamilton?")
+=======
+    linc_pipeline("Does Kimi Antonelli drive for Mercedes and is he teammates with Lewis Hamilton?")
+>>>>>>> 9d0b31c (pushing task 8 and the new kb)

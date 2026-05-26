@@ -7,15 +7,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-KB_PATH = os.path.join(BASE_DIR, "f1_kb2.pl")
+KB_PATH = os.path.join(BASE_DIR, "f1_kb2.pl") # my kb from previous tasks but with more facts and rules
 
 # load the prolog KB into janus
 def load_knowledge_base():
     if not os.path.exists(KB_PATH):
-        print(f"couldn't find the KB file at {KB_PATH}")
+      #  print(f"couldn't find the KB file at {KB_PATH}")
         return
     janus.query_once(f"consult('{KB_PATH}')")
-    print("loaded f1_kb2.pl into prolog ok")
+   # print("loaded f1_kb2.pl into prolog ok")
 
 # basic RAG that scans the .pl file for lines that match keywords in the question
 def get_relevant_context(user_query):
@@ -41,7 +41,7 @@ def get_relevant_context(user_query):
 
 # use langchain to translate the natural language question into a prolog query
 def translate_to_prolog(question, rag_context):
-    model = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.0)
+    model = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", temperature=0.0)
 
     prompt_template = PromptTemplate(
         input_variables=["rag_context", "question"],
@@ -85,7 +85,7 @@ def run_query(user_question):
         is_true = len(results) > 0
 
         print(f"result: {str(is_true).upper()}")
-        print("inference trace")
+        print("inference trace:")
 
         if is_true:
             print("fact or rule matched in KB")
@@ -105,6 +105,9 @@ def run_query(user_question):
 if __name__ == "__main__":
     load_knowledge_base()
     # tests
-    run_query("Is Lewis Hamilton a driver for Ferrari?")
+    run_query("Is Ferrari a works team?")
+    run_query("Is McLaren a customer team?")
+    run_query("Are Lewis Hamilton and Max Verstappen rivals?")
+    run_query("Is George Russell a race winner?")
     run_query("Is Charles Leclerc a teammate of Lewis Hamilton?")
     run_query("Is Max Verstappen a veteran driver?")
