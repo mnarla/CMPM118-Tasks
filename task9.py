@@ -17,7 +17,7 @@ print("loaded f1_kb2.pl into prolog ok")
 model = ChatOpenAI(model="gpt-4o-mini", temperature=0.0)
 
 
-# shared state passed between nodes - same pattern as the langgraph docs
+# shared state passed between nodes, this is same pattern as the langgraph docs
 class State(TypedDict):
     question: str
     context: str
@@ -26,7 +26,7 @@ class State(TypedDict):
     result: bool
 
 
-# node 1 - RAG: pull relevant lines from the KB based on keywords
+# node 1: RAG pulls relevant lines from the KB based on keywords
 def rag_node(state: State):
     matches = []
     keywords = state["question"].lower().split()
@@ -47,7 +47,7 @@ def rag_node(state: State):
     return {"context": context}
 
 
-# node 2 - judge whether the retrieved context is actually useful
+# node 2: judge whether the context is actually useful
 def judge_node(state: State):
     prompt = PromptTemplate(
         input_variables=["question", "context"],
@@ -67,15 +67,13 @@ Reply with only YES or NO."""
     return {"context_relevant": is_relevant}
 
 
-# conditional edge - route to translate if relevant, skip to prolog with generic context if not
+# route to translate if relevant, skip to prolog with generic context if not
 def route_after_judge(state: State):
     if state["context_relevant"]:
         return "translate"
-    return "translate"  # still translate either way, but context will just say "none"
+    return "translate"  
 
-
-# node 3 - translate the question to prolog using chain of thought for refinement
-# added "think step by step" to get the model to reason before committing to a query
+# node 3: translate the question to prolog using chain of thought
 def translate_node(state: State):
     prompt = PromptTemplate(
         input_variables=["context", "question"],
@@ -107,7 +105,7 @@ Prolog Query:"""
     return {"prolog_query": query}
 
 
-# node 4 - run the prolog query through janus and print the inference trace
+# node 4: run the prolog query through janus and print the inference trace
 def prolog_node(state: State):
     try:
         results = list(janus.query(state["prolog_query"]))
@@ -131,7 +129,7 @@ def prolog_node(state: State):
         return {"result": False}
 
 
-# build the graph - same StateGraph pattern from the langgraph docs
+# build the graph 
 workflow = StateGraph(State)
 
 workflow.add_node("rag", rag_node)
@@ -164,9 +162,9 @@ def run_query(question):
 
 
 if __name__ == "__main__":
-    run_query("Is Ferrari a works team?")
-    run_query("Is McLaren a customer team?")
-    run_query("Are Lewis Hamilton and Max Verstappen rivals?")
-    run_query("Is George Russell a race winner?")
-    run_query("Is Charles Leclerc a teammate of Lewis Hamilton?")
-    run_query("Is Max Verstappen a veteran driver?")
+    run_query("Is Mercedes a works team?")
+    run_query("Is Aston Martin a customer team?")
+    run_query("Are Lando Norris and Fernando Alonso rivals?")
+    run_query("Is Fernando Alonso a veteran driver?")
+    run_query("Are Oscar Piastri and Lando Norris teammates?")
+    run_query("Is Lance Stroll a race winner?")
