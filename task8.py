@@ -1,6 +1,6 @@
 import os
 import janus_swi as janus
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
 from dotenv import load_dotenv
 
@@ -41,7 +41,7 @@ def get_relevant_context(user_query):
 
 # use langchain to translate the natural language question into a prolog query
 def translate_to_prolog(question, rag_context):
-    model = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", temperature=0.0)
+    model = ChatOpenAI(model="gpt-4o-mini", temperature=0.0)
 
     prompt_template = PromptTemplate(
         input_variables=["rag_context", "question"],
